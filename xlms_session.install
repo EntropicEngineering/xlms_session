@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function xlms_session_install() {
+  drupal_install_schema('xlms_session');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function xlms_session_uninstall() {
+  drupal_uninstall_schema('xlms_session');
+}
+
+/**
+ * Implements hook_schema().
+ */
+function xlms_session_schema() {
+  $schema['xlms_session'] = array(
+    'description' => t('Information about simulator sessions/attempts.'),
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'result_id' => array(
+        'description' => 'Result ID from the {quiz_node_results}.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'trainer_id' => array(
+        'description' => 'Likely just the serial number; data provided by Chrome app',
+        'type' => 'varchar',
+        'length' => 200,
+        'not null' => FALSE,
+      ),
+      'session_data' => array(
+        'description' => 'JSON output of session results.',
+        'type' => 'text',
+        'not null' => FALSE,
+        'serialize' => TRUE,
+      ),
+    ),
+  );
+  return $schema;
+}

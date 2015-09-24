@@ -1,0 +1,7 @@
+name = XLMS Session
+description = Session resource for REST service, stores data for other modules.
+package = XLMS 
+dependencies[] = services
+dependencies[] = quiz
+core = 7.x                                                                       
+files[] = xlms_session.module

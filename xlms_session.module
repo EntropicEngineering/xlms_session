@@ -1,0 +1,192 @@
+<?php
+
+/**
+  * Gets an XLMS session object by id.
+  *
+  * @param int $id
+  * @return object
+  */
+function xlms_session_load($id) {
+  $xlms_session = db_fetch_object(db_query("SELECT * FROM {xlms_session} WHERE id=:id", array(
+    ':id' => $id,
+  )));
+
+  if (isset($xlms_session->result_id)) {
+    $xlms_session->result = db_fetch_object(db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(
+      ':id' => $xlms_session->result_id)));
+
+    $xlms_session->start = $xlms_session->result->time_start;
+  }
+
+  return $xlms_session;
+}
+
+/**
+ * Writes an XLMS session to the database.
+ *
+ * @param object $xlms_session
+ * @return void
+ */
+function xlms_session_write($xlms_session) {
+  $primary_key = !empty($xlms_session->id) ? array('id') : NULL;
+  drupal_write_record('xlms_session', $xlms_session, $primary_key);
+}
+
+/**
+  * Deletes an XLMS session from the database.
+  *
+  * @param int $id
+  * @return void
+  */
+function xlms_session_delete($id) {
+  db_query("DELETE FROM {xlms_session} WHERE id=:id", array(
+    ':id' => $id,
+  ));
+}
+
+/**
+  * Access callback for sessions.
+  *
+  * @param string $op
+  *  The operation that's going to be performed.
+  * @param array $args
+  *  The arguments that will be passed to the callback.
+  * @return bool
+  *  Whether access is given or not.
+  */
+function xlms_session_access($op, $args) {
+
+  $access = FALSE;
+
+  // TODO: not sure how we're implementing authentication; MUST CHANGE
+  switch ($op) {
+    case 'retrieve':
+      $access = TRUE;
+
+    case 'update':
+      $access = TRUE;
+
+    case 'delete':
+      $access = TRUE;
+  }
+
+  return $access;
+}
+
+/**
+  * Implements hook_services_resources().
+ */
+function xlms_session_services_resources() {
+  return array(
+    'xlms_session' => array(
+      'retrieve' => array(
+        'help' => 'Retrieves a session',
+        'callback' => 'xlms_session_load',
+        'access callback' => 'xlms_session_access',
+        'access arguments' => array('retrieve'),
+        'access arguments append' => TRUE,
+        'args' => array(
+          array(
+            'name' => 'id',
+            'type' => 'int',
+            'description' => 'The id of the session to get',
+            'source' => array('path' => '0'),
+            'optional' => FALSE,
+          ),
+        ),
+      ),
+      'update' => array(
+        'help' => 'Updates a session with simulator data',
+        'callback' => '_xlms_session_services_update',
+        'access callback' => 'xlms_session_access',
+        'access arguments' => array('update'),
+        'access arguments append' => TRUE,
+        'args' => array(
+          array(
+            'name' => 'id',
+            'type' => 'int',
+            'description' => 'The id of the session to update',
+            'source' => array('path' => '0'),
+            'optional' => FALSE,
+          ),
+          array(
+            'name' => 'data',
+            'type' => 'struct',
+            'description' => 'The session data object',
+            'source' => 'data',
+            'optional' => FALSE,
+          ),
+        ),
+      ),
+      'delete' => array(
+        'help' => 'Deletes simulator data from a session' ,
+        'callback' => '_xlms_session_services_delete',
+        'access callback' => 'xlms_session_access',
+        'access arguments' => array('delete'),
+        'access arguments append' => TRUE,
+        'args' => array(
+          array(
+            'name' => 'id',
+            'type' => 'int',
+            'description' => 'The id of the session to delete',
+            'source' => array('path' => '0'),
+            'optional' => FALSE,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+/**
+  * Callback for updating session resources.
+  *
+  * @param int $id
+  * @param object $data
+  * @return object
+  */
+function _xlms_session_services_update($id, $data) {
+  $xlms_session = xlms_session_load($id);
+
+  // TODO - not sure exactly what this data looks like yet?
+  $xlms_session->trainer_id = $data->trainer_id;
+  $xlms_session->session_data = $data->session_data;
+
+  xlms_session_write($xlms_session);
+  // TODO drupal_alter / module_invoke
+
+  return $xlms_session;
+}
+
+/**
+  * Callback for deleting session data.
+  *
+  * @param int $id
+  * @return object
+  */
+function _xlms_session_services_delete($id) {
+  $xlms_session = xlms_session_load($id);
+
+  // Empty the trainer's values but keep the rest.
+  $xlms_session->trainer_id = NULL;
+  $xlms_session->session_data = NULL;
+  
+  xlms_session_write($xlms_session);
+  // TODO drupal_alter / module_invoke
+
+  return $xlms_session;
+}
+
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function xlms_session_ctools_plugin_api($owner, $api) {
+  if ($owner == 'services' && $api == 'services') {
+    return array(
+      'version' => 3,
+      'file' => 'xlms_session.services.inc', // Optional parameter to indicate the file name to load.
+      'path' => drupal_get_path('module', 'xlms_session') . '/includes', // If specifying the file key, path is required.
+    );
+  }
+}
