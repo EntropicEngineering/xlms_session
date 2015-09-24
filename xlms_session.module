@@ -7,14 +7,10 @@
   * @return object
   */
 function xlms_session_load($id) {
-  $xlms_session = db_fetch_object(db_query("SELECT * FROM {xlms_session} WHERE id=:id", array(
-    ':id' => $id,
-  )));
+  $xlms_session = db_query("SELECT * FROM {xlms_session} WHERE id=:id", array(':id' => $id));
 
   if (isset($xlms_session->result_id)) {
-    $xlms_session->result = db_fetch_object(db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(
-      ':id' => $xlms_session->result_id)));
-
+    $xlms_session->result = db_query("SELECT * FROM {quiz_node_results} WHERE result_idid=:id", array(':id' => $xlms_session->result_id));
     $xlms_session->start = $xlms_session->result->time_start;
   }
 
@@ -39,9 +35,9 @@ function xlms_session_write($xlms_session) {
   * @return void
   */
 function xlms_session_delete($id) {
-  db_query("DELETE FROM {xlms_session} WHERE id=:id", array(
-    ':id' => $id,
-  ));
+  db_delete('xlms_session')
+    ->condition('id', $id)
+    ->execute();
 }
 
 /**
