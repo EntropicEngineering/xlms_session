@@ -44,6 +44,13 @@ function xlms_session_schema() {
         'serialize' => TRUE,
       ),
     ),
+    'primary key' => array('id'),
+    'foreign keys' => array(
+      'result_id' => array(
+        'table' => 'quiz_node_results',
+        'columns' => array('result_id' => 'result_id'),
+      ),
+    ),
   );
   return $schema;
 }
