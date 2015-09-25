@@ -8,6 +8,7 @@
   */
 function xlms_session_load($id) {
   $xlms_session = db_query("SELECT * FROM {xlms_session} WHERE id=:id", array(':id' => $id));
+watchdog('xlms_session', print_r($xlms_session));
 
   if (isset($xlms_session->result_id)) {
     $xlms_session->result = db_query("SELECT * FROM {quiz_node_results} WHERE result_idid=:id", array(':id' => $xlms_session->result_id));
@@ -75,58 +76,60 @@ function xlms_session_access($op, $args) {
 function xlms_session_services_resources() {
   return array(
     'xlms_session' => array(
-      'retrieve' => array(
-        'help' => 'Retrieves a session',
-        'callback' => 'xlms_session_load',
-        'access callback' => 'xlms_session_access',
-        'access arguments' => array('retrieve'),
-        'access arguments append' => TRUE,
+      'operations' => array(
+        'retrieve' => array(
+          'help' => 'Retrieves a session',
+          'callback' => 'xlms_session_load',
+          'access callback' => 'xlms_session_access',
+          'access arguments' => array('retrieve'),
+          'access arguments append' => TRUE,
         'args' => array(
-          array(
-            'name' => 'id',
-            'type' => 'int',
-            'description' => 'The id of the session to get',
-            'source' => array('path' => '0'),
-            'optional' => FALSE,
+            array(
+              'name' => 'id',
+              'type' => 'int',
+              'description' => 'The id of the session to get',
+              'source' => array('path' => '0'),
+              'optional' => FALSE,
+            ),
           ),
         ),
-      ),
-      'update' => array(
-        'help' => 'Updates a session with simulator data',
-        'callback' => '_xlms_session_services_update',
-        'access callback' => 'xlms_session_access',
-        'access arguments' => array('update'),
-        'access arguments append' => TRUE,
-        'args' => array(
-          array(
-            'name' => 'id',
-            'type' => 'int',
-            'description' => 'The id of the session to update',
-            'source' => array('path' => '0'),
-            'optional' => FALSE,
-          ),
-          array(
-            'name' => 'data',
-            'type' => 'struct',
-            'description' => 'The session data object',
-            'source' => 'data',
-            'optional' => FALSE,
+        'update' => array(
+          'help' => 'Updates a session with simulator data',
+          'callback' => '_xlms_session_services_update',
+          'access callback' => 'xlms_session_access',
+          'access arguments' => array('update'),
+          'access arguments append' => TRUE,
+          'args' => array(
+            array(
+              'name' => 'id',
+              'type' => 'int',
+              'description' => 'The id of the session to update',
+              'source' => array('path' => '0'),
+              'optional' => FALSE,
+            ),
+            array(
+              'name' => 'data',
+              'type' => 'struct',
+              'description' => 'The session data object',
+              'source' => 'data',
+              'optional' => FALSE,
+            ),
           ),
         ),
-      ),
-      'delete' => array(
-        'help' => 'Deletes simulator data from a session' ,
-        'callback' => '_xlms_session_services_delete',
-        'access callback' => 'xlms_session_access',
-        'access arguments' => array('delete'),
-        'access arguments append' => TRUE,
-        'args' => array(
-          array(
-            'name' => 'id',
-            'type' => 'int',
-            'description' => 'The id of the session to delete',
-            'source' => array('path' => '0'),
-            'optional' => FALSE,
+        'delete' => array(
+          'help' => 'Deletes simulator data from a session' ,
+          'callback' => '_xlms_session_services_delete',
+          'access callback' => 'xlms_session_access',
+          'access arguments' => array('delete'),
+          'access arguments append' => TRUE,
+          'args' => array(
+            array(
+              'name' => 'id',
+              'type' => 'int',
+              'description' => 'The id of the session to delete',
+              'source' => array('path' => '0'),
+              'optional' => FALSE,
+            ),
           ),
         ),
       ),
