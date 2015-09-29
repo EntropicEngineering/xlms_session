@@ -7,11 +7,12 @@
   * @return object
   */
 function xlms_session_load($id) {
-  $xlms_session = db_query("SELECT * FROM {xlms_session} WHERE id=:id", array(':id' => $id));
-watchdog('xlms_session', print_r($xlms_session));
+  $result = db_query("SELECT * FROM {xlms_session} WHERE id=:id", array(':id' => $id));
+  $xlms_session = $result->fetchObject();
 
   if (isset($xlms_session->result_id)) {
-    $xlms_session->result = db_query("SELECT * FROM {quiz_node_results} WHERE result_idid=:id", array(':id' => $xlms_session->result_id));
+    $result = db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(':id' => $xlms_session->result_id));
+    $xlms_session->result = $result->fetchObject();
     $xlms_session->start = $xlms_session->result->time_start;
   }
 
