@@ -79,7 +79,8 @@ function xlms_session_services_resources() {
       'operations' => array(
         'retrieve' => array(
           'help' => 'Retrieves a session',
-          'callback' => 'xlms_session_load',
+          'callback' => '_xlms_session_services_retrieve',
+          'file' => array('type' => 'inc', 'module' => 'xlms_session', 'name' => 'includes/xlms_session.services'),
           'access callback' => 'xlms_session_access',
           'access arguments' => array('retrieve'),
           'access arguments append' => TRUE,
@@ -135,6 +136,18 @@ function xlms_session_services_resources() {
       ),
     ),
   );
+}
+
+/**
+  * Callback for loading session resources.
+  *
+  * @param int $id
+  * @param object $data
+  * @return object
+  */
+function _xlms_session_services_retrieve_not($id) {
+  die;
+  return xlms_session_load($id);
 }
 
 /**

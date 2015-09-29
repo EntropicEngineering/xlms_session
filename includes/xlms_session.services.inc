@@ -37,3 +37,14 @@ function xlms_session_default_services_endpoint() {
 
   return $endpoints;
 }
+
+/**                                                                              
+  * Callback for loading session resources.                                      
+  *                                                                              
+  * @param int $id                                                               
+  * @param object $data                                                          
+  * @return object                                                               
+  */                                                                             
+function _xlms_session_services_retrieve($id) {                                  
+  return xlms_session_load($id);                                                 
+} 
