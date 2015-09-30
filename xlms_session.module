@@ -105,6 +105,8 @@ function xlms_session_menu() {
     'page callback' => 'system_admin_menu_block_page',
     'weight' => -30,
     'position' => 'right',
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
     'access arguments' => array('access administration pages'),
   );
 
