@@ -46,7 +46,7 @@ function xlms_session_default_services_endpoint() {
   * @return object                                                               
   */                                                                             
 function _xlms_session_services_retrieve($id) {                                  
-  return xlms_session_load($id);                                                 
+  return New XlmsSession($id);                                                 
 } 
 
 /**
@@ -57,17 +57,8 @@ function _xlms_session_services_retrieve($id) {
   * @return object
   */
 function _xlms_session_services_update($id, $data) {
-  $xlms_session = xlms_session_load($id);
-
-  // TODO - not sure exactly what this data looks like yet?
-  $xlms_session->trainer_id = $data->trainer_id;
-  $xlms_session->session_data = $data->session_data;
-
-  xlms_session_write($xlms_session);
-
-  // Inform any other modules that an update occurred and pass the session data.
-  module_invoke_all('xlms_session_update', $xlms_session);
-
+  $xlms_session = New XlmsSession($id);
+  $xlms_session->setSessionData($data);
   return $xlms_session;
 }
 
@@ -75,17 +66,9 @@ function _xlms_session_services_update($id, $data) {
   * Callback for deleting session data.
   *
   * @param int $id
-  * @return object
+  * @return void
   */
 function _xlms_session_services_delete($id) {
-  $xlms_session = xlms_session_load($id);
-
-  // Empty the trainer's values but keep the rest.
-  $xlms_session->trainer_id = NULL;
-  $xlms_session->session_data = NULL;
-  
-  xlms_session_write($xlms_session);
-  // TODO drupal_alter / module_invoke
-
-  return $xlms_session;
+  $xlms_session = New XlmsSession($id);
+  $xlms_session->unsetSessionData();
 }

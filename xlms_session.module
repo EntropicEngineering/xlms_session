@@ -7,26 +7,10 @@
   * @param int $result_id
   * @return object
   */
-function xlms_session_initialize($result_id) {
-  $xlms_session = New stdClass();
-  $xlms_session->result_id = (int) $result_id;
-
-  xlms_session_write($xlms_session);
-
-  if ($url = variable_get('xlms_session_chrome_url', '')) {
-    $xlms_session->url = $url;
-    $xlms_session->url_query = array();
-
-    // Tell the Chrome app where to look for our endpoint.
-    if ($endpoint = services_endpoint_load('xlms_session')) {
-      $path = url($endpoint->path . '/' . $endpoint->name, array('absolute' => TRUE));                
-    }
-
-    // Add our id to the URL so Chrome app doesn't need to parse anything.
-    $path .= '/' . $xlms_session->id;
-    $xmls_session->url_query['endpoint'] = $path;
-  }
-
+function xlms_session_initialize($result_id = NULL) {
+  $xlms_session = New XlmsSession();
+  $xlms_session->setQuizResult($result_id);
+  $xlms_session->save();
   return $xlms_session;
 }
 
@@ -37,41 +21,7 @@ function xlms_session_initialize($result_id) {
   * @return object
   */
 function xlms_session_load($id) {
-  $result = db_query("SELECT * FROM {xlms_session} WHERE id=:id", array(':id' => $id));
-  $xlms_session = $result->fetchObject();
-
-  if (isset($xlms_session->result_id)) {
-    $result = db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(':id' => $xlms_session->result_id));
-    $xlms_session->result = $result->fetchObject();
-  }
-
-  drupal_alter('xlms_session_load', $xlms_session);
-
-  return $xlms_session;
-}
-
-/**
- * Writes an XLMS session to the database.
- *
- * @param object $xlms_session
- * @return void
- */
-function xlms_session_write(&$xlms_session) {
-  $primary_key = !empty($xlms_session->id) ? array('id') : NULL;
-
-  drupal_write_record('xlms_session', $xlms_session, $primary_key);
-}
-
-/**
-  * Deletes an XLMS session from the database.
-  *
-  * @param int $id
-  * @return void
-  */
-function xlms_session_delete($id) {
-  db_delete('xlms_session')
-    ->condition('id', $id)
-    ->execute();
+  return New XlmsSession($id);
 }
 
 /**

@@ -8,4 +8,5 @@ core = 7.x
 files[] = xlms_session.module
 files[] = includes/xlms_session.services.inc
 files[] = includes/xlms_session.settings.inc
+files[] = lib/XlmsSession.php
 configure = admin/config/xlms/xlms_session
