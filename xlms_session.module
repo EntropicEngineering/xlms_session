@@ -16,6 +16,8 @@ function xlms_session_load($id) {
     $xlms_session->start = $xlms_session->result->time_start;
   }
 
+  drupal_alter('xlms_session', $xlms_session);
+
   return $xlms_session;
 }
 
