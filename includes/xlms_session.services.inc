@@ -64,7 +64,9 @@ function _xlms_session_services_update($id, $data) {
   $xlms_session->session_data = $data->session_data;
 
   xlms_session_write($xlms_session);
-  // TODO drupal_alter / module_invoke
+
+  // Inform any other modules that an update occurred and pass the session data.
+  module_invoke_all('xlms_session_update', $xlms_session);
 
   return $xlms_session;
 }

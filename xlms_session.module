@@ -40,10 +40,8 @@ function xlms_session_load($id) {
  * @param object $xlms_session
  * @return void
  */
-function xlms_session_write($xlms_session) {
+function xlms_session_write(&$xlms_session) {
   $primary_key = !empty($xlms_session->id) ? array('id') : NULL;
-
-  drupal_alter('xlms_session_write', $xlms_session);
 
   drupal_write_record('xlms_session', $xlms_session, $primary_key);
 }
