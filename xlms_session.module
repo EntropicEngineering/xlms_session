@@ -13,6 +13,13 @@ function xlms_session_initialize($result_id) {
 
   if ($url = variable_get('xlms_session_chrome_url', '')) {
     $xlms_session->url = $url;
+    $xlms_session->url_query = array();
+
+    // Tell the Chrome app where to look for our endpoint.
+    if ($endpoint = services_endpoint_load('xlms_session')) {
+      $path = $endpoint->path . '/' . $endpoint->name;
+    }
+    $xmls_session->url_query['endpoint'] = $path;
   }
 
   xlms_session_write($xlms_session);
