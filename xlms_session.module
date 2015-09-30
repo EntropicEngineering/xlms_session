@@ -94,6 +94,18 @@ function xlms_session_access($op, $args) {
 }
 
 /**
+ * Implements hook_permission().
+ */
+function xlms_session_permission() {
+  return array(
+    'administer xlms session settings' = array(
+      'title' => 'Administer XLMS Session settings',
+      'description' => 'Update URL for Chrome app and other configuration settings.',
+    ),
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function xlms_session_menu() {
@@ -116,7 +128,7 @@ function xlms_session_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xlms_session_settings'),
     'file' => 'includes/xlms_session.settings.inc',
-    'access arguments' => array('administer xlms_session settings'),
+    'access arguments' => array('administer xlms session settings'),
     'type' => MENU_NORMAL_ITEM,
   );
 
