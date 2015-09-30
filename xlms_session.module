@@ -30,7 +30,7 @@ function xlms_session_load($id) {
     $xlms_session->start = $xlms_session->result->time_start;
   }
 
-  drupal_alter('xlms_session', $xlms_session);
+  drupal_alter('xlms_session_load', $xlms_session);
 
   return $xlms_session;
 }
@@ -43,6 +43,9 @@ function xlms_session_load($id) {
  */
 function xlms_session_write($xlms_session) {
   $primary_key = !empty($xlms_session->id) ? array('id') : NULL;
+
+  drupal_alter('xlms_session_write', $xlms_session);
+
   drupal_write_record('xlms_session', $xlms_session, $primary_key);
 }
 
