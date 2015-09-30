@@ -1,6 +1,20 @@
 <?php
 
 /**
+  * Initialize a session. Accepts a request_id from {quiz_node_results} table,
+  * creates a record, and makes a connection to the Chrome app.
+  *
+  * @param int $result_id
+  * @return object
+  */
+function xlms_session_initialize($result_id) {
+  $xlms_session = New stdClass();
+  $xlms_session->result_id = (int) $result_id;
+
+  xlms_session_write($xlms_session);
+}
+
+/**
   * Gets an XLMS session object by id.
   *
   * @param int $id
