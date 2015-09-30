@@ -27,7 +27,6 @@ function xlms_session_load($id) {
   if (isset($xlms_session->result_id)) {
     $result = db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(':id' => $xlms_session->result_id));
     $xlms_session->result = $result->fetchObject();
-    $xlms_session->start = $xlms_session->result->time_start;
   }
 
   drupal_alter('xlms_session_load', $xlms_session);
