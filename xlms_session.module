@@ -98,7 +98,7 @@ function xlms_session_access($op, $args) {
  */
 function xlms_session_permission() {
   return array(
-    'administer xlms session settings' = array(
+    'administer xlms session settings' => array(
       'title' => 'Administer XLMS Session settings',
       'description' => 'Update URL for Chrome app and other configuration settings.',
     ),
