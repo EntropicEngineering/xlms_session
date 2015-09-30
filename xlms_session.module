@@ -11,7 +11,13 @@ function xlms_session_initialize($result_id) {
   $xlms_session = New stdClass();
   $xlms_session->result_id = (int) $result_id;
 
+  if ($url = variable_get('xlms_session_chrome_url', '')) {
+    $xlms_session->url = $url;
+  }
+
   xlms_session_write($xlms_session);
+
+  return $xlms_session;
 }
 
 /**
@@ -90,7 +96,35 @@ function xlms_session_access($op, $args) {
 }
 
 /**
-  * Implements hook_services_resources().
+ * Implements hook_menu().
+ */
+function xlms_session_menu() {
+  $items = array();
+
+  $items['admin/config/xlms'] = array(
+    'title' => 'XLMS',
+    'description' => 'XLMS settings',
+    'page callback' => 'system_admin_menu_block_page',
+    'weight' => -30,
+    'position' => 'right',
+    'access arguments' => array('access administration pages'),
+  );
+
+  $items['admin/config/xlms/xlms_session'] = array(
+    'title' => 'XLMS Session settings',
+    'description' => 'Chrome app settings and other configuration details to manage XLMS sessions.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xlms_session_settings'),
+    'file' => 'includes/xlms_session.settings.inc',
+    'access arguments' => array('administer xlms_session settings'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_services_resources().
  */
 function xlms_session_services_resources() {
   return array(
