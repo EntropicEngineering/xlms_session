@@ -9,9 +9,10 @@ class XlmsSession {
 
   var $id;
 
-  private $result_id;
+  // @TODO: Still getting a fatal error in common.inc if this is protected or private.
+  var $result_id;
 
-  private $result;
+  private $quizResult;
 
   var $trainer_id;
 
@@ -91,11 +92,16 @@ class XlmsSession {
 
   function quizResult() {
     if (!isset($this->quizResult)) {
-      if (isset($xlms_session->result_id)) {                                         
-        $result = db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(':id' => $xlms_session->result_id));
-        $this->quizResult = $result->fetchObject();                              
-      } 
+      if (isset($this->result_id)) {
+        $result = db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(':id' => $this->result_id));
+        $this->quizResult = $result->fetchObject();
+      }
     }
     return $this->quizResult;
+  }
+
+  function setQuizResult($result_id) {
+    $this->result_id = $result_id;
+    return $this->quizResult();
   }
 }
