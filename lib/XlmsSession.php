@@ -33,7 +33,6 @@ class XlmsSession {
         }
       }
     }
-    watchdog('alert','test');
     drupal_alter('xlms_session_load', $this);
   }
 
