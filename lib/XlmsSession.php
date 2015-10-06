@@ -33,6 +33,8 @@ class XlmsSession {
         }
       }
     }
+    watchdog('alert','test');
+    drupal_alter('xlms_session_load', $this);
   }
 
   function setSessionData($data) {
@@ -73,6 +75,7 @@ class XlmsSession {
       $this->url_query = array();
     }
     $this->url_query['endpoint'] = $this->endpoint();
+    return $this->url_query;
   }
 
   function endpoint() {
@@ -84,7 +87,7 @@ class XlmsSession {
 
     // Add our id to the URL so Chrome app doesn't need to parse anything.       
     if ($this->id) {
-      $path .= '/' . $xlms_session->id;                                            
+      $path .= '/' . $this->id;                                            
     }
 
     return $path;
