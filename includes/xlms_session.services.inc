@@ -59,6 +59,7 @@ function _xlms_session_services_retrieve($id) {
 function _xlms_session_services_update($id, $data) {
   $xlms_session = New XlmsSession($id);
   $xlms_session->setSessionData($data);
+  $xlms_session->close();
   return $xlms_session;
 }
 
