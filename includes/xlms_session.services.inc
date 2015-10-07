@@ -46,7 +46,13 @@ function xlms_session_default_services_endpoint() {
   * @return object                                                               
   */                                                                             
 function _xlms_session_services_retrieve($id) {                                  
-  return New XlmsSession($id);                                                 
+  $xlms_session = New XlmsSession($id);
+  if ($xlms_session->closed) {
+    drupal_not_found();
+  }
+  else {
+    return $xlms_session;
+  }
 } 
 
 /**

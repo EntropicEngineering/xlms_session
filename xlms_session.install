@@ -51,6 +51,12 @@ function xlms_session_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'closed' => array(
+        'description' => 'Boolean indicating that the session has been closed and thus cannot be accessed through Services.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
       'session_data' => array(
         'description' => 'JSON output of session results.',
         'type' => 'text',
@@ -95,4 +101,17 @@ function xlms_session_update_7100() {
     'default' => 0,
   );
   db_add_field('xlms_session', 'success', $spec);
+}
+
+/**
+ * Add closed column to {xlms_session} table.
+ */
+function xlms_session_update_7101() {
+  $spec = array(
+    'description' => 'Boolean indicating that the session has been closed and thus cannot be accessed through Services.',
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+  );
+  db_add_field('xlms_session', 'closed', $spec);
 }
