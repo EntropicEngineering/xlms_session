@@ -98,4 +98,25 @@ class XlmsSession {
     }
     return $this->quizResult;
   }
+
+  /**
+   * @return array
+   *   list of previous attempts for this uid/lesson combination.
+   */
+  function attempts() {
+    if (!isset($this->attempts)) {
+      if ($quizResult = this->quizResult()) {
+        $result = db_query("SELECT s.id FROM {xlms_session} s
+          INNER JOIN {quiz_node_results} qr ON s.result_id = qr.result_id
+          WHERE qr.vid=:vid AND qr.uid=:uid
+          ORDER by qr.result_id ASC",
+          array(':vid' => $quizResult->vid, ':uid' => quizResult->uid));
+
+        while ($row = $result->fetchObject()) {
+          $this->attempts[$row->id] = New XlmsSession($row->id);
+        }
+      }
+    }
+    return $this->attempts;
+  }
 }
