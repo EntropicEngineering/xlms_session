@@ -49,6 +49,7 @@ function _xlms_session_services_retrieve($id) {
   $xlms_session = New XlmsSession($id);
   if ($xlms_session->closed) {
     drupal_not_found();
+    exit();
   }
   else {
     return $xlms_session;
