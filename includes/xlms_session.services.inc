@@ -46,7 +46,14 @@ function xlms_session_default_services_endpoint() {
   * @return object                                                               
   */                                                                             
 function _xlms_session_services_retrieve($id) {                                  
-  return New XlmsSession($id);                                                 
+  $xlms_session = New XlmsSession($id);
+  if ($xlms_session->closed) {
+    drupal_not_found();
+    exit();
+  }
+  else {
+    return $xlms_session;
+  }
 } 
 
 /**
@@ -58,8 +65,14 @@ function _xlms_session_services_retrieve($id) {
   */
 function _xlms_session_services_update($id, $data) {
   $xlms_session = New XlmsSession($id);
-  $xlms_session->setSessionData($data);
-  return $xlms_session;
+  if ($xlms_session->closed) {
+    drupal_not_found();
+  }
+  else {
+    $xlms_session->setSessionData($data);
+    $xlms_session->close();
+    return $xlms_session;
+  }
 }
 
 /**

@@ -34,20 +34,26 @@ class XlmsSession {
           $this->$property = $value;
         }
       }
+      if (isset($this->session_data)) {
+        $this->session_data = unserialize($this->session_data);
+      }
     }
     drupal_alter('xlms_session_load', $this);
   }
 
   function setSessionData($data) {
-    // TODO - not sure exactly what this data looks like yet?                      
-    $this->trainer_id = $data->trainer_id;                                 
-    $this->session_data = $data->session_data;                             
-    $this->start_time = $data->start_time;                             
-    $this->elapsed_time = $data->elapsed_time;                             
-    $this->success = $data->success;                             
+
+    $this->trainer_id = $data['trainer_id'];
+    $this->start_time = $data['start_time'];
+    $this->elapsed_time = $data['elapsed_time'];
+    $this->success = $data['success'];
+    $this->session_data = $data;
                                                                                  
     // Inform any other modules that an update occurred and pass the session data. 
     module_invoke_all('xlms_session_update', $this);
+
+    // @TODO: Remove debug
+    watchdog(WATCHDOG_INFO, t('XLMS Simulator Data: ') . print_r($data, 1));
 
     $this->save();
   }
@@ -63,8 +69,13 @@ class XlmsSession {
   }
 
   function save() {
-    $primary_key = !empty($this->id) ? array('id') : NULL;                 
+    $primary_key = !empty($this->id) ? array('id') : array();
     drupal_write_record('xlms_session', $this, $primary_key); 
+  }
+
+  function close() {
+    $this->closed = TRUE;
+    $this->save();
   }
 
   function chromeUrl() {

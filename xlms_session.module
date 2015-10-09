@@ -37,19 +37,28 @@ function xlms_session_load($id) {
   *  Whether access is given or not.
   */
 function xlms_session_access($op, $args) {
-
   $access = FALSE;
+
+  if (is_int($id = current($args))) {
+    $xlms_session = New XlmsSession($id);
+    
+    if ($xlms_session->closed) {
+      $access = FALSE;
+    }
+    else {
+      $access = TRUE;
+    }
+  }
+
+  $access = TRUE;
 
   // TODO: not sure how we're implementing authentication; MUST CHANGE
   switch ($op) {
     case 'retrieve':
-      $access = TRUE;
 
     case 'update':
-      $access = TRUE;
 
     case 'delete':
-      $access = TRUE;
   }
 
   return $access;
