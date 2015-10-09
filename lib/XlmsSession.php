@@ -9,9 +9,10 @@ class XlmsSession {
 
   var $id;
 
-  private $result_id;
+  // @TODO: Still getting a fatal error in common.inc if this is protected or private.
+  var $result_id;
 
-  private $result;
+  private $quizResult;
 
   var $trainer_id;
 
@@ -23,6 +24,8 @@ class XlmsSession {
 
   var $success;
 
+  var $closed = 0;
+
   function XlmsSession($id = NULL) {
     if ($id) {
       $result = db_query("SELECT * FROM {xlms_session} WHERE id=:id", array(':id' => $id));
@@ -32,6 +35,7 @@ class XlmsSession {
         }
       }
     }
+    drupal_alter('xlms_session_load', $this);
   }
 
   function setSessionData($data) {
@@ -72,6 +76,7 @@ class XlmsSession {
       $this->url_query = array();
     }
     $this->url_query['endpoint'] = $this->endpoint();
+    return $this->url_query;
   }
 
   function endpoint() {
@@ -83,7 +88,7 @@ class XlmsSession {
 
     // Add our id to the URL so Chrome app doesn't need to parse anything.       
     if ($this->id) {
-      $path .= '/' . $xlms_session->id;                                            
+      $path .= '/' . $this->id;                                            
     }
 
     return $path;
@@ -91,10 +96,10 @@ class XlmsSession {
 
   function quizResult() {
     if (!isset($this->quizResult)) {
-      if (isset($xlms_session->result_id)) {                                         
-        $result = db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(':id' => $xlms_session->result_id));
-        $this->quizResult = $result->fetchObject();                              
-      } 
+      if (isset($this->result_id)) {
+        $result = db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(':id' => $this->result_id));
+        $this->quizResult = $result->fetchObject();
+      }
     }
     return $this->quizResult;
   }
@@ -118,5 +123,11 @@ class XlmsSession {
       }
     }
     return $this->attempts;
+  }
+
+  function setQuizResult($result_id) {
+    $this->result_id = $result_id;
+    return $this->quizResult();
+>>>>>>> a7b9e3aca5891b1454cae8ded9c1e4d7e2499fc2
   }
 }

@@ -21,7 +21,9 @@ function xlms_session_initialize($result_id = NULL) {
   * @return object
   */
 function xlms_session_load($id) {
-  return New XlmsSession($id);
+  $xlms_session = New XlmsSession($id);
+  drupal_alter('xlms_session_load', $xlms_session);
+  return $xlms_session;
 }
 
 /**
