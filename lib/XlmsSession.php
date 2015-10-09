@@ -121,12 +121,12 @@ class XlmsSession {
    */
   function attempts() {
     if (!isset($this->attempts)) {
-      if ($quizResult = this->quizResult()) {
+      if ($quizResult = $this->quizResult()) {
         $result = db_query("SELECT s.id FROM {xlms_session} s
           INNER JOIN {quiz_node_results} qr ON s.result_id = qr.result_id
           WHERE qr.vid=:vid AND qr.uid=:uid
           ORDER by qr.result_id ASC",
-          array(':vid' => $quizResult->vid, ':uid' => quizResult->uid));
+          array(':vid' => $quizResult->vid, ':uid' => $quizResult->uid));
 
         while ($row = $result->fetchObject()) {
           $this->attempts[$row->id] = New XlmsSession($row->id);
@@ -139,6 +139,5 @@ class XlmsSession {
   function setQuizResult($result_id) {
     $this->result_id = $result_id;
     return $this->quizResult();
->>>>>>> a7b9e3aca5891b1454cae8ded9c1e4d7e2499fc2
   }
 }
