@@ -9,6 +9,10 @@ class XlmsSession {
 
   var $id;
 
+  var $exercise;
+
+  var $course;
+
   // @TODO: Still getting a fatal error in common.inc if this is protected or private.
   var $result_id;
 
@@ -110,18 +114,51 @@ class XlmsSession {
     return $path;
   }
 
+  function setQuizResult($result_id = NULL) {
+    if ($result_id) {
+      $this->result_id = $result_id;
+      $this->save();
+    }
+    return $this->quizResult();
+  }
+
   function quizResult() {
     if (!isset($this->quizResult)) {
       if (isset($this->result_id)) {
         $result = db_query("SELECT * FROM {quiz_node_results} WHERE result_id=:id", array(':id' => $this->result_id));
         $this->quizResult = $result->fetchObject();
       }
+
+      if ($node = node_load($this->quizResult->nid, $this->quizResult->vid)) {
+        $this->exercise = $node->title;
+
+        if (isset($node->og_group_ref['und'][0])) {
+          $group = node_load($node->og_group_ref['und'][0]['target_id']);
+          $this->course = $group->title;
+        }
+      }
     }
     return $this->quizResult;
   }
 
-  function setQuizResult($result_id) {
-    $this->result_id = $result_id;
-    return $this->quizResult();
+  /**
+   * @return array
+   *   list of previous attempts for this uid/lesson combination.
+   */
+  function attempts() {
+    if (!isset($this->attempts)) {
+      if ($quizResult = $this->quizResult()) {
+        $result = db_query("SELECT s.id FROM {xlms_session} s
+          INNER JOIN {quiz_node_results} qr ON s.result_id = qr.result_id
+          WHERE qr.vid=:vid AND qr.uid=:uid
+          ORDER by qr.result_id ASC",
+          array(':vid' => $quizResult->vid, ':uid' => $quizResult->uid));
+
+        while ($row = $result->fetchObject()) {
+          $this->attempts[$row->id] = New XlmsSession($row->id);
+        }
+      }
+    }
+    return $this->attempts;
   }
 }
