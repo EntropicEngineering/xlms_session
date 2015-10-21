@@ -26,9 +26,14 @@ class XlmsSession {
 
   var $closed = 0;
 
-  function XlmsSession($id = NULL) {
+  function XlmsSession($id = NULL, $result_id = NULL) {
     if ($id) {
       $result = db_query("SELECT * FROM {xlms_session} WHERE id=:id", array(':id' => $id));
+    }
+    if ($result_id) {
+      $result = db_query("SELECT * FROM {xlms_session} WHERE result_id=:result_id", array(':result_id' => $result_id));
+    }
+    if (is_object($result)) {
       foreach ($result->fetchObject() as $property => $value) {
         if (property_exists($this, $property)) {
           $this->$property = $value;
