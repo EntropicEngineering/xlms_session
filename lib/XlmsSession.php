@@ -46,6 +46,8 @@ class XlmsSession {
       if (isset($this->session_data)) {
         $this->session_data = unserialize($this->session_data);
       }
+      $this->kurento_url = $this->kurentoUrl();
+      $this->kurento_video_directory = $this->kurentoVideoDirectory();
     }
     drupal_alter('xlms_session_load', $this);
   }
@@ -57,7 +59,7 @@ class XlmsSession {
     $this->elapsed_time = $data['elapsed_time'];
     $this->success = $data['success'];
     $this->session_data = $data;
-                                                                                 
+
     // Inform any other modules that an update occurred and pass the session data. 
     module_invoke_all('xlms_session_update', $this);
 
@@ -85,6 +87,14 @@ class XlmsSession {
   function close() {
     $this->closed = TRUE;
     $this->save();
+  }
+
+  function kurentoUrl() {
+    return variable_get('xlms_session_kurento_server', '');
+  }
+
+  function kurentoVideoDirectory() {
+    return variable_get('xlms_session_kurento_video_directory', '');
   }
 
   function chromeUrl() {
