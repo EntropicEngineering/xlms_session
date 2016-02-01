@@ -1,5 +1,7 @@
 <?php
 
+define('XLMS_API_LEVEL', 'v0.1.0');
+
 /**
   * Initialize a session. Accepts a request_id from {quiz_node_results} table,
   * creates a record, and makes a connection to the Chrome app.

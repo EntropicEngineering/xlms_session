@@ -11,11 +11,19 @@ function xlms_session_default_services_endpoint() {
   $endpoint->api_version = 3;
   $endpoint->name = 'xlms_session';
   $endpoint->server = 'rest_server';
-  $endpoint->path = 'xlms/session';
+  $endpoint->path = 'rest/xlms/' . XLMS_API_LEVEL;
   $endpoint->authentication = array(
     'services' => 'services',
   );
-  $endpoint->server_settings = array();
+  $endpoint->server_settings = array(
+    'formatters' => array(
+      'json' => TRUE,
+      'bencode' => FALSE,
+      'jsonp' => FALSE,
+      'php' => FALSE,
+      'xml' => FALSE,
+    ),
+  );
   $endpoint->resources = array(
     'xlms_session' => array(
       'operations' => array(
