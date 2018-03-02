@@ -40,6 +40,7 @@ function xlms_session_schema() {
       'start_time' => array(
         'description' => 'The start time, as defined by the Chrome app.',
         'type' => 'int',
+        'size' => 'big',
       ),
       'elapsed_time' => array(
         'description' => 'Duration of the session, defined by the Chrome app.',
@@ -47,7 +48,7 @@ function xlms_session_schema() {
       ),
       'success' => array(
         'description' => 'Pass/fail boolean for the session.',
-        'type' => 'int',
+        'type' => 'float',
         'not null' => TRUE,
         'default' => 0,
       ),
@@ -114,4 +115,28 @@ function xlms_session_update_7101() {
     'default' => 0,
   );
   db_add_field('xlms_session', 'closed', $spec);
+}
+
+/**
+ * Change success to a float.
+ */
+function xlms_session_update_7102() {
+  $spec = array(
+    'type' => 'float',
+    'size' => 'medium',
+    'not null' => FALSE,
+  );
+  db_change_field('xlms_session', 'success', 'success', $spec);
+}
+
+/**
+ * Change success to a float.
+ */
+function xlms_session_update_7103() {
+  $spec = array(
+    'type' => 'int',
+    'size' => 'big',
+    'not null' => FALSE,
+  );
+  db_change_field('xlms_session', 'start_time', 'start_time', $spec);
 }

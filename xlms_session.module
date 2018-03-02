@@ -10,7 +10,7 @@ define('XLMS_API_LEVEL', 'v0.1.0');
   * @return object
   */
 function xlms_session_initialize($result_id = NULL) {
-  $xlms_session = New XlmsSession();
+  $xlms_session = New XlmsSession(NULL, $result_id);
   $xlms_session->setQuizResult($result_id);
   $xlms_session->save();
   return $xlms_session;
